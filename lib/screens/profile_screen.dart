@@ -6,6 +6,7 @@ import '../services/reminder_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 import '../widgets/theme_picker.dart';
+import 'attendance_sessions_screen.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -201,6 +202,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 _section(c, 'TAMPILAN'),
                 const ThemePicker(),
+                _section(c, 'ABSENSI SESI'),
+                Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: _icon(c, Icons.work_outline),
+                        title: const Text('Lembur Terjadwal / On-Call'),
+                        subtitle: const Text('Absen lembur — validasi dari tabel peserta'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const AttendanceSessionsScreen())),
+                      ),
+                      Divider(color: c.border),
+                      ListTile(
+                        leading: _icon(c, Icons.groups_outlined),
+                        title: const Text('Meeting & Pelatihan'),
+                        subtitle: const Text('Absen kehadiran undangan — validasi tabel peserta'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const AttendanceSessionsScreen())),
+                      ),
+                    ],
+                  ),
+                ),
                 _section(c, 'APLIKASI'),
                 Card(
                   child: Column(

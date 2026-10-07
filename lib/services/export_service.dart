@@ -57,9 +57,17 @@ class ExportService {
 
     // --- Lembur ---
     final l = excel['Lembur'];
-    _header(l, ['Tanggal', 'Mulai', 'Selesai', 'Jam']);
+    _header(l, ['Tanggal', 'Judul', 'Jenis', 'Mulai', 'Selesai', 'Jam', 'Diabsen']);
     for (final o in rekap.overtime) {
-      l.appendRow([TextCellValue(o.date), TextCellValue(o.start), TextCellValue(o.end), DoubleCellValue(o.hours)]);
+      l.appendRow([
+        TextCellValue(o.date),
+        TextCellValue(o.title),
+        TextCellValue(o.kind),
+        TextCellValue(o.start),
+        TextCellValue(o.end),
+        DoubleCellValue(o.hours),
+        TextCellValue(o.attended ? 'Ya' : 'Tidak'),
+      ]);
     }
 
     // --- Payroll (estimasi) ---

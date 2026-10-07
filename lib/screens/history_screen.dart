@@ -230,6 +230,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       '${r.workMinutes ~/ 60} j ${r.workMinutes % 60} m'),
                   _line(c, 'Total terlambat', '${r.lateMinutes} menit'),
                   _line(c, 'Total lembur', '${r.overtimeHours.toStringAsFixed(1)} jam'),
+                  if (r.eventInvited > 0)
+                    _line(c, 'Kehadiran meeting/pelatihan',
+                        '${r.eventAttended}/${r.eventInvited} undangan'),
                 ],
               ),
             ),
@@ -268,9 +271,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: c.text)),
             ...r.overtime.map((o) => Card(
                   child: ListTile(
-                    leading: Icon(Icons.more_time, color: c.primary),
-                    title: Text(f.format(DateTime.parse(o.date))),
-                    subtitle: Text('${o.start} – ${o.end}'),
+                    leading: Icon(
+                        o.kind == 'On-Call' ? Icons.support_agent : Icons.more_time,
+                        color: o.kind == 'On-Call' ? Colors.deepOrange : c.primary),
+                    title: Text('${o.title.isEmpty ? f.format(DateTime.parse(o.date)) : o.title}'
+                        ' • ${o.kind}'),
+                    subtitle: Text('${f.format(DateTime.parse(o.date))} · ${o.start} – ${o.end}'
+                        '${o.attended ? '' : ' · belum diabsen'}'),
                     trailing: Text('${o.hours.toStringAsFixed(1)} jam',
                         style: const TextStyle(fontWeight: FontWeight.w700)),
                   ),

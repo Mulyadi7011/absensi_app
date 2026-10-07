@@ -313,7 +313,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Text(
                                 _shift == null
                                     ? _office!.name
-                                    : '${_office!.name} • ${_shift!.shift.name}',
+                                    : '${_office!.name} • ${_shift!.shift.name}'
+                                      ' • jam kerja ${_shift!.shift.start}–${_shift!.shift.end}',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(color: c.onPrimary, fontSize: 12)),
                           ),

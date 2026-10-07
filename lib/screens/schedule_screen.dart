@@ -160,6 +160,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       children: d.tags.map((t) => StatusPill(status: t)).toList(),
                     ),
                   ],
+                  if (d.events.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    ...d.events.map((e) => Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Row(
+                            children: [
+                              Icon(Icons.event_available, size: 14, color: c.info.fg),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text('Undangan: $e',
+                                    style: TextStyle(fontSize: 12, color: c.info.fg)),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ],
                 ],
               ),
             ),

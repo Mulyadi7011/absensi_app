@@ -6,6 +6,7 @@ import '../config.dart';
 import '../models/attendance.dart';
 import '../models/notification.dart';
 import '../models/office.dart';
+import '../models/event.dart';
 import '../models/pengajuan.dart';
 import '../models/rekap.dart';
 import '../models/shift.dart';
@@ -62,6 +63,10 @@ class ApiService {
         'is_mocked': p.isMocked,
         if (mode != null) 'mode': mode,
       };
+
+  /// Payload absen sesi (lembur/meeting) — menyertakan office_id utk validasi radius.
+  static Future<Map<String, dynamic>> _payloadWithOffice(Position p) async =>
+      {..._payload(p), 'office_id': await _officeId()};
 
   /// Fitur yang baru tersedia di mock.
   static Future<T> _mock<T>(Future<T> Function(String email) f) async {
@@ -166,4 +171,25 @@ class ApiService {
 
   static Future<Rekap> recap(int year, int month) =>
       _mock((e) => MockServer.recap(e, year, month));
+
+  // ---------- Lembur terjadwal / On-Call (validasi dari tabel peserta) ----------
+  static Future<List<OvertimeSchedule>> myOvertimes() => _mock(MockServer.myOvertimes);
+
+  static Future<EventAttendance> overtimeCheckIn(String otId, Position pos) =>
+      _mock((e) async => MockServer.overtimeCheckIn(e, otId, await _payloadWithOffice(pos)));
+
+  static Future<EventAttendance> overtimeCheckOut(String otId, Position pos) =>
+      _mock((e) async => MockServer.overtimeCheckOut(e, otId, await _payloadWithOffice(pos)));
+
+  // ---------- Absensi Meeting & Pelatihan (validasi dari tabel peserta) ----------
+  static Future<List<WorkEvent>> myEvents() => _mock(MockServer.myEvents);
+
+  static Future<EventAttendance?> eventAttendance(String eventId) =>
+      _mock((e) => MockServer.eventAttendance(e, eventId));
+
+  static Future<EventAttendance> eventCheckIn(String eventId, Position pos) =>
+      _mock((e) async => MockServer.eventCheckIn(e, eventId, await _payloadWithOffice(pos)));
+
+  static Future<EventAttendance> eventCheckOut(String eventId, Position pos) =>
+      _mock((e) async => MockServer.eventCheckOut(e, eventId, await _payloadWithOffice(pos)));
 }
