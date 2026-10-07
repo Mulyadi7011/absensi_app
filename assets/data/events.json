@@ -1,0 +1,70 @@
+{
+  "overtimes": [
+    {
+      "id": "OT1",
+      "title": "Tutup Buku Bulanan",
+      "kind": "Terjadwal",
+      "start": "today 17:30",
+      "end": "today 20:30",
+      "participants": ["budi@contoh.com", "dewi@contoh.com"],
+      "rate_x": 1.5
+    },
+    {
+      "id": "OT2",
+      "title": "On-Call Support Malam",
+      "kind": "On-Call",
+      "start": "tomorrow 21:00",
+      "end": "tomorrow 23:30",
+      "participants": ["sari@contoh.com"],
+      "rate_x": 2.0
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "title": "Rapat Koordinasi Proyek Alpha",
+      "kind": "Meeting",
+      "organizer": "Dewi Lestari",
+      "location": "Ruang Meeting Lantai 2",
+      "start": "today 10:00",
+      "end": "today 11:00",
+      "check_in_lead_min": 15,
+      "check_out_lag_min": 30,
+      "participants": [
+        { "email": "budi@contoh.com", "name": "Budi Santoso" },
+        { "email": "dewi@contoh.com", "name": "Dewi Lestari" },
+        { "email": "sari@contoh.com", "name": "Sari Wulandari" }
+      ]
+    },
+    {
+      "id": "E2",
+      "title": "Pelatihan Keselamatan Kerja",
+      "kind": "Pelatihan",
+      "organizer": "HRD",
+      "location": "Aula Kantor",
+      "start": "today 13:00",
+      "end": "today 15:00",
+      "check_in_lead_min": 30,
+      "check_out_lag_min": 30,
+      "participants": [
+        { "email": "budi@contoh.com", "name": "Budi Santoso" },
+        { "email": "sari@contoh.com", "name": "Sari Wulandari" }
+      ]
+    },
+    {
+      "id": "E3",
+      "title": "Workshop Perencanaan Q4",
+      "kind": "Meeting",
+      "organizer": "Dewi Lestari",
+      "location": "Ruang Meeting Lantai 3",
+      "start": "tomorrow 09:00",
+      "end": "tomorrow 12:00",
+      "check_in_lead_min": 15,
+      "check_out_lag_min": 30,
+      "participants": [
+        { "email": "budi@contoh.com", "name": "Budi Santoso" },
+        { "email": "dewi@contoh.com", "name": "Dewi Lestari" }
+      ]
+    }
+  ]
+}

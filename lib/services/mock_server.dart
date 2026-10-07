@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../models/attendance.dart';
+import '../models/event.dart';
 import '../models/notification.dart';
 import '../models/office.dart';
 import '../models/pengajuan.dart';
@@ -20,6 +21,9 @@ class MockServer {
   static final Map<String, Map<String, Attendance>> _records = {};
   static late List<Pengajuan> _requests;
   static late List<AppNotification> _notifs;
+  static late List<OvertimeSchedule> _overtimes;
+  static late List<WorkEvent> _events;
+  static final Map<String, EventAttendance> _eventAtts = {}; // key: eventId|email
   static int _seq = 100;
 
   static final _df = DateFormat('yyyy-MM-dd');
@@ -45,6 +49,15 @@ class MockServer {
     _patterns = Map<String, dynamic>.from(sh['patterns']);
     _pay = await _json('payroll.json');
 
+    // tabel jadwal lembur + undangan meeting/pelatihan (kalender perusahaan)
+    final ev = await _json('events.json');
+    _overtimes = (ev['overtimes'] as List)
+        .map((e) => OvertimeSchedule.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+    _events = (ev['events'] as List)
+        .map((e) => WorkEvent.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+
     // riwayat dummy (hanya untuk user ber-flag seed_history)
     final h = (await _json('history.json')) as List;
     final today = _day(DateTime.now());
@@ -54,6 +67,7 @@ class MockServer {
       if (u['seed_history'] != true) continue;
       for (final e in h) {
         final m = Map<String, dynamic>.from(e);
+        m['email'] = email;
         final date = today.subtract(Duration(days: m['days_ago'] as int));
         final s = _shiftOn(email, date);
         if (s == null) continue; // lewati hari libur
@@ -62,9 +76,33 @@ class MockServer {
           m['shift'] = s.name;
           m['mode'] = 'WFO';
           m['break_min'] = s.breakMinutes;
+          m['scheduled_start'] = s.start;
+          m['scheduled_end'] = s.end;
+          m['tolerance_min'] = s.toleranceMin;
           if (m['status'] == 'Terlambat') m['late_min'] = _m(m['check_in']) - _m(s.start);
         }
-        recs[m['date']] = Attendance.fromJson(m);
+        // validasi event dari tabel peserta & absen yang tercatat pada sesi ini
+        final dayStr = m['date'] as String;
+        m['event_titles'] = _events
+            .where((x) =>
+                _day(x.start) == date &&
+                x.participants.any((p) => p.email.toLowerCase() == email.toLowerCase()))
+            .map((x) => x.title)
+            .toList();
+        final ot = _overtimes
+            .where((x) => _otBelongsTo(x, date) && x.involves(email))
+            .toList();
+        if (ot.isNotEmpty) {
+          final att = _eventAtts[_ek('OT:${ot.first.id}', email)];
+          m['overtime_scheduled'] = true;
+          m['overtime_attended'] = att?.checkIn != null;
+          m['overtime_kind'] = ot.first.kind;
+          m['overtime_title'] = ot.first.title;
+          m['overtime_start'] = _tf.format(ot.first.start);
+          m['overtime_end'] = _tf.format(ot.first.end);
+          m['overtime_rate_x'] = ot.first.rateX;
+        }
+        recs[dayStr] = Attendance.fromJson(m);
       }
     }
 
@@ -106,6 +144,75 @@ class MockServer {
     final list = _patterns[email] as List?;
     final id = list == null ? null : list[d.weekday - 1];
     return id == null ? null : _shifts[id];
+  }
+
+  /// Tanggal "kepemilikan" record absensi untuk sesi lembur yang melewati tengah malam.
+  static bool _otBelongsTo(OvertimeSchedule o, DateTime day) =>
+      _day(o.start) == day || (o.crossesMidnight && _day(o.end) == day);
+
+  static WorkEvent? _eventById(String id) {
+    for (final e in _events) {
+      if (e.id == id) return e;
+    }
+    return null;
+  }
+
+  static String _ek(String eventId, String email) => '$eventId|$email';
+
+  /// Jadwal kerja masing-masing karyawan pada hari [date] — sumber jam kerja & toleransi.
+  static Map<String, dynamic> _workHours(String email, DateTime date) {
+    final s = _shiftOn(email, date);
+    return {
+      'shift': s?.name,
+      'scheduled_start': s?.start,
+      'scheduled_end': s?.end,
+      'tolerance_min': s?.toleranceMin ?? 0,
+    };
+  }
+
+  /// Judul meeting/pelatihan yang diundang (validasi keanggotaan dari tabel peserta).
+  static List<String> _invitedTitles(String email, DateTime date) => _events
+      .where((x) => _day(x.start) == date && x.isParticipant(email))
+      .map((x) => x.title)
+      .toList();
+
+  /// Info jadwal lembur (Terjadwal/On-Call) milik user pada tanggal [date], dari tabel lembur.
+  static Map<String, dynamic>? _otInfoAt(String email, DateTime date) {
+    final matches = _overtimes.where((o) => o.involves(email) && _otBelongsTo(o, date)).toList();
+    if (matches.isEmpty) return null;
+    final o = matches.first;
+    final att = _eventAtts[_ek('OT:${o.id}', email)];
+    return {
+      'overtime_scheduled': true,
+      'overtime_attended': att?.checkIn != null,
+      'overtime_kind': o.kind,
+      'overtime_title': o.title,
+      'overtime_start': _tf.format(o.start),
+      'overtime_end': _tf.format(o.end),
+      'overtime_rate_x': o.rateX,
+    };
+  }
+
+  Attendance _enrich(Attendance a) {
+    final wh = _workHours(a.email, _d(a.date));
+    final ot = _otInfoAt(a.email, _d(a.date));
+    final m = a.toJson();
+    for (final k in ['shift', 'scheduled_start', 'scheduled_end', 'tolerance_min']) {
+      if (m[k] == null && wh[k] != null) m[k] = wh[k];
+    }
+    if (ot != null) {
+      m['overtime_scheduled'] = ot['overtime_scheduled'];
+      m['overtime_attended'] = ot['overtime_attended'];
+      m['overtime_kind'] ??= ot['overtime_kind'];
+      m['overtime_title'] ??= ot['overtime_title'];
+      m['overtime_start'] ??= ot['overtime_start'];
+      m['overtime_end'] ??= ot['overtime_end'];
+      m['overtime_rate_x'] ??= ot['overtime_rate_x'];
+    }
+    if ((m['event_titles'] as List?)?.isEmpty ?? true) {
+      m['event_titles'] = _invitedTitles(a.email, _d(a.date));
+    }
+    return Attendance.fromJson(m);
   }
 
   static bool _hasApproved(String email, String type, DateTime date) =>
@@ -201,7 +308,19 @@ class MockServer {
           tags.add(r.type);
         }
       }
-      return DaySchedule(d, _shiftOn(email, d), tags);
+      // lembur dari TABEL jadwal lembur (Terjadwal / On-Call), bukan pengajuan mandiri
+      for (final o in _overtimes) {
+        if (o.involves(email) && _otBelongsTo(o, d)) {
+          tags.add('${o.kind == OvertimeSchedule.typeOnCall ? 'On-Call' : 'Lembur'} '
+              '${_tf.format(o.start)}–${_tf.format(o.end)}');
+        }
+      }
+      // undangan meeting/pelatihan (validasi dari tabel peserta)
+      final evts = _events
+          .where((e) => _day(e.start) == d && e.isParticipant(email))
+          .map((e) => '${e.kind}: ${e.title}')
+          .toList();
+      return DaySchedule(d, _shiftOn(email, d), tags, evts);
     });
   }
 
@@ -210,12 +329,13 @@ class MockServer {
     await init();
     final inst = _instance(email, DateTime.now());
     if (inst == null) return null;
-    return _records[email]?[_df.format(inst.date)];
+    final a = _records[email]?[_df.format(inst.date)];
+    return a == null ? null : _enrich(a);
   }
 
   static Future<List<Attendance>> history(String email) async {
     await init();
-    final l = (_records[email] ?? {}).values.toList();
+    final l = (_records[email] ?? {}).values.map(_enrich).toList();
     l.sort((a, b) => b.date.compareTo(a.date));
     return l;
   }
@@ -271,17 +391,27 @@ class MockServer {
 
     final d = _validate(email, mode, inst, p);
     final late = now.isAfter(inst.start.add(Duration(minutes: inst.shift.toleranceMin)));
-    return recs[key] = Attendance(
-      date: key,
-      checkIn: _tf.format(now),
-      status: late ? 'Terlambat' : 'Hadir',
-      office: mode == 'WFH' ? 'Rumah (WFH)' : mode == 'DINAS' ? 'Dinas Luar' : _office(email).name,
-      distance: d,
-      shift: inst.shift.name,
-      mode: mode,
-      breakMin: inst.shift.breakMinutes,
-      lateMin: late ? now.difference(inst.start).inMinutes : 0,
-    );
+    final wh = {
+      'scheduled_start': inst.shift.start,
+      'scheduled_end': inst.shift.end,
+      'tolerance_min': inst.shift.toleranceMin,
+    };
+    final ot = _otInfoAt(email, inst.date);
+    return recs[key] = Attendance.fromJson({
+      'date': key,
+      'email': email,
+      'check_in': _tf.format(now),
+      'status': late ? 'Terlambat' : 'Hadir',
+      'office': mode == 'WFH' ? 'Rumah (WFH)' : mode == 'DINAS' ? 'Dinas Luar' : _office(email).name,
+      'distance_m': d,
+      'shift': inst.shift.name,
+      'mode': mode,
+      'break_min': inst.shift.breakMinutes,
+      'late_min': late ? now.difference(inst.start).inMinutes : 0,
+      ...wh,
+      if (ot != null) ...ot,
+      'event_titles': _invitedTitles(email, inst.date),
+    });
   }
 
   static Future<Attendance> checkOut(String email, Map<String, dynamic> p) async {
@@ -295,6 +425,186 @@ class MockServer {
     if (rec.checkOut != null) throw Exception('Anda sudah check out untuk shift ini');
     _validate(email, rec.mode, inst, p);
     return _records[email]![key] = rec.copyWith(checkOut: _tf.format(DateTime.now()));
+  }
+
+  // ---------------- lembur terjadwal / on-call ----------------
+  /// Jadwal lembur user yang sedang/sudah berlangsung hari ini (dari tabel lembur).
+  static Future<List<OvertimeSchedule>> myOvertimes(String email) async {
+    await init();
+    final l = _overtimes.where((o) => o.involves(email)).toList();
+    l.sort((a, b) => a.start.compareTo(b.start));
+    return l;
+  }
+
+  /// Check in sesi lembur — validasi dari TABEL peserta lembur (bukan pengajuan mandiri).
+  static Future<EventAttendance> overtimeCheckIn(String email, String otId,
+      Map<String, dynamic> p) async {
+    await init();
+    await Future.delayed(const Duration(milliseconds: 400));
+    final o = _overtimes.firstWhere(
+      (x) => x.id == otId,
+      orElse: () => throw Exception('Jadwal lembur tidak ditemukan.'),
+    );
+    if (!o.involves(email)) {
+      throw Exception('Anda tidak terdaftar di tabel peserta lembur "${o.title}".');
+    }
+    final now = DateTime.now();
+    if (now.isBefore(o.start.subtract(const Duration(minutes: 15)))) {
+      throw Exception('Absen lembur dibuka 15 menit sebelum mulai (${_tf.format(o.start)}).');
+    }
+    if (now.isAfter(o.end.add(const Duration(hours: 1)))) {
+      throw Exception('Absen lembur sesi ini sudah ditutup.');
+    }
+    final d = _otValidate(p, o);
+    final key = _ek('OT:${o.id}', email);
+    final prev = _eventAtts[key];
+    final late = now.isAfter(o.start.add(const Duration(minutes: 10)));
+    return _eventAtts[key] = EventAttendance(
+      eventId: 'OT:${o.id}',
+      userEmail: email,
+      checkIn: prev?.checkIn ?? _tf.format(now),
+      checkOut: prev?.checkOut,
+      distanceM: d,
+      status: late ? 'Terlambat' : 'Hadir',
+    );
+  }
+
+  static Future<EventAttendance> overtimeCheckOut(String email, String otId,
+      Map<String, dynamic> p) async {
+    await init();
+    await Future.delayed(const Duration(milliseconds: 400));
+    final o = _overtimes.firstWhere(
+      (x) => x.id == otId,
+      orElse: () => throw Exception('Jadwal lembur tidak ditemukan.'),
+    );
+    final key = _ek('OT:${o.id}', email);
+    final prev = _eventAtts[key];
+    if (prev == null || prev.checkIn == null) {
+      throw Exception('Anda belum check in lembur pada sesi ini.');
+    }
+    if (prev.checkOut != null) throw Exception('Anda sudah check out lembur sesi ini.');
+    if (DateTime.now().isBefore(o.end.subtract(const Duration(minutes: 15)))) {
+      throw Exception('Check out lembur belum dibuka (sesi berakhir ${_tf.format(o.end)}).');
+    }
+    _otValidate(p, o);
+    return _eventAtts[key] = EventAttendance(
+      eventId: prev.eventId,
+      userEmail: email,
+      checkIn: prev.checkIn,
+      checkOut: _tf.format(DateTime.now()),
+      distanceM: prev.distanceM,
+      status: prev.status,
+    );
+  }
+
+  /// Validasi GPS umum: anti fake-GPS & ambang akurasi. [radiusCheck] opsional
+  /// (mis. radius kantor untuk lembur terjadwal). Mengembalikan jarak (m) bila dihitung.
+  static double? _gpsBase(Map<String, dynamic> p, {double Function()? distanceTo}) {
+    if (p['is_mocked'] == true) {
+      throw Exception('Terdeteksi lokasi palsu (Fake GPS). Nonaktifkan aplikasi mock location.');
+    }
+    final acc = (p['accuracy'] as num).toDouble();
+    if (acc > (_rules['max_accuracy_m'] as num)) {
+      throw Exception('Akurasi GPS rendah (${acc.round()} m). Pindah ke area terbuka lalu coba lagi.');
+    }
+    return distanceTo?.call();
+  }
+
+  /// Validasi lokasi sesi: Lembur Terjadwal wajib di radius kantor; On-Call cukup GPS valid
+  /// (bisa dari rumah/mana pun — lokasi hanya dicatat). Meeting/Pelatihan (o == null):
+  /// di dalam radius kantor ATAU sesuai lokasi event (lokasi dicatat tanpa batas ketat).
+  static double? _otValidate(Map<String, dynamic> p, OvertimeSchedule? o, {String? location}) {
+    return _gpsBase(p, distanceTo: () {
+      if (o != null && o.kind == OvertimeSchedule.typeOnCall) return null;
+      if (location != null && location.trim().isNotEmpty) return null; // meeting/training: dicatat
+      final lat = p['latitude'] as double, lng = p['longitude'] as double;
+      final officeId = p['office_id'] as String?;
+      final off = _offices.firstWhere((x) => x.id == officeId);
+      final d = distance(lat, lng, off.latitude, off.longitude);
+      if (d > off.radiusM) {
+        throw Exception('Anda ${d.round()} m dari ${off.name}. Maksimal ${off.radiusM.round()} m.');
+      }
+      return d;
+    });
+  }
+
+  // ---------------- meeting & pelatihan ----------------
+  /// Undangan meeting/pelatihan user (validasi keanggotaan lewat tabel peserta).
+  static Future<List<WorkEvent>> myEvents(String email) async {
+    await init();
+    final l = _events.where((e) => e.isParticipant(email)).toList();
+    l.sort((a, b) => a.start.compareTo(b.start));
+    return l;
+  }
+
+  static Future<EventAttendance?> eventAttendance(String email, String eventId) async {
+    await init();
+    return _eventAtts[_ek(eventId, email)];
+  }
+
+  /// Absen kehadiran meeting/pelatihan — HANYA boleh jika email ada di tabel peserta.
+  static Future<EventAttendance> eventCheckIn(String email, String eventId,
+      Map<String, dynamic> p) async {
+    await init();
+    await Future.delayed(const Duration(milliseconds: 400));
+    final e = _eventById(eventId) ?? throw Exception('Undangan tidak ditemukan.');
+    if (!e.isParticipant(email)) {
+      throw Exception('Anda tidak diundang (tidak ada di tabel peserta "${e.title}").');
+    }
+    final now = DateTime.now();
+    if (now.isBefore(e.checkInOpen)) {
+      throw Exception('Absen ${e.kind.toLowerCase()} belum dibuka (${e.windowLabel}).');
+    }
+    if (now.isAfter(e.checkOutClose)) {
+      throw Exception('Absen ${e.kind.toLowerCase()} untuk sesi ini sudah ditutup.');
+    }
+    final d = _gpsBase(p); // validasi GPS; lokasi event dicatat tanpa batas radius
+    final key = _ek(eventId, email);
+    final prev = _eventAtts[key];
+    final late = now.isAfter(e.start.add(const Duration(minutes: 10)));
+    final res = _eventAtts[key] = EventAttendance(
+      eventId: eventId,
+      userEmail: email,
+      checkIn: prev?.checkIn ?? _tf.format(now),
+      checkOut: prev?.checkOut,
+      distanceM: d,
+      status: late ? 'Terlambat' : 'Hadir',
+    );
+    // catat kehadiran pada record harian bila sudah ada (validasi tabel peserta)
+    final dayKey = _df.format(_day(e.start));
+    final rec = _records[email]?[dayKey];
+    if (rec != null && !rec.eventTitles.contains(e.title)) {
+      _records[email]![dayKey] = Attendance.fromJson({
+        ...rec.toJson(),
+        'event_titles': [...rec.eventTitles, e.title],
+      });
+    }
+    return res;
+  }
+
+  static Future<EventAttendance> eventCheckOut(String email, String eventId,
+      Map<String, dynamic> p) async {
+    await init();
+    await Future.delayed(const Duration(milliseconds: 400));
+    final e = _eventById(eventId) ?? throw Exception('Undangan tidak ditemukan.');
+    final key = _ek(eventId, email);
+    final prev = _eventAtts[key];
+    if (prev == null || prev.checkIn == null) {
+      throw Exception('Anda belum absen masuk pada ${e.kind.toLowerCase()} ini.');
+    }
+    if (prev.checkOut != null) throw Exception('Anda sudah absen keluar pada sesi ini.');
+    if (DateTime.now().isAfter(e.checkOutClose)) {
+      throw Exception('Absen keluar sudah ditutup (${e.windowLabel}).');
+    }
+    _gpsBase(p);
+    return _eventAtts[key] = EventAttendance(
+      eventId: eventId,
+      userEmail: email,
+      checkIn: prev.checkIn,
+      checkOut: _tf.format(DateTime.now()),
+      distanceM: prev.distanceM,
+      status: prev.status,
+    );
   }
 
   // ---------------- pengajuan & persetujuan ----------------
@@ -336,6 +646,11 @@ class MockServer {
     final days = end.difference(start).inDays + 1;
     final today = _day(DateTime.now());
 
+    if (type == 'Lembur') {
+      throw Exception(
+          'Lembur kini mengikuti jadwal dari tabel lembur (Terjadwal/On-Call). '
+          'Absen lewat menu "Lembur & On-Call".');
+    }
     if (type == 'Cuti' && _usedCuti(email) + days > (_rules['leave_quota'] as int)) {
       throw Exception('Sisa cuti tidak cukup untuk $days hari.');
     }
@@ -422,6 +737,7 @@ class MockServer {
       final isLate = late > s.toleranceMin;
       recs[r.startDate] = Attendance(
         date: r.startDate,
+        email: r.userEmail,
         checkIn: r.startTime,
         checkOut: r.endTime,
         status: isLate ? 'Terlambat' : 'Hadir',
@@ -429,15 +745,20 @@ class MockServer {
         shift: s.name,
         breakMin: s.breakMinutes,
         lateMin: isLate ? late : 0,
+        scheduledStart: s.start,
+        scheduledEnd: s.end,
+        toleranceMin: s.toleranceMin,
       );
     } else if (['Izin', 'Sakit', 'Cuti'].contains(r.type)) {
       final today = _day(DateTime.now());
       for (var d = _d(r.startDate); !d.isAfter(_d(r.endDate)); d = d.add(const Duration(days: 1))) {
         if (d.isAfter(today) || _shiftOn(r.userEmail, d) == null) continue;
-        recs[_df.format(d)] = Attendance(date: _df.format(d), status: 'Izin', office: r.type);
+        recs[_df.format(d)] =
+            Attendance(date: _df.format(d), email: r.userEmail, status: 'Izin', office: r.type);
       }
     }
-    // Lembur / WFH / Dinas Luar: dibaca langsung dari daftar pengajuan (payroll & validasi absen)
+    // WFH / Dinas Luar: dibaca langsung dari daftar pengajuan (validasi absen).
+    // Lembur TIDAK lagi lewat pengajuan — sumbernya tabel jadwal lembur (Terjadwal/On-Call).
   }
 
   // ---------------- notifikasi ----------------
@@ -484,18 +805,23 @@ class MockServer {
     final workMin = recs.fold<int>(0, (s, a) => s + (a.duration?.inMinutes ?? 0));
     final lateMin = recs.fold<int>(0, (s, a) => s + a.lateMin);
 
-    final ot = _requests
-        .where((r) =>
-            r.userEmail == email &&
-            r.type == 'Lembur' &&
-            r.status == 'Disetujui' &&
-            _d(r.startDate).year == year &&
-            _d(r.startDate).month == month)
-        .map((r) => OvertimeItem(r.startDate, r.startTime!, r.endTime!, r.overtimeHours))
-        .toList();
+    // Lembur dihitung dari TABEL jadwal lembur (Terjadwal/On-Call) + absen lembur yang dilakukan.
+    // Jam pertama 1,5x, jam berikutnya 2x (upah per jam = gaji / 173), dikali rate_x sesi.
+    final ot = <OvertimeItem>[];
+    for (final o in _overtimes) {
+      if (!o.involves(email)) continue;
+      final att = _eventAtts[_ek('OT:${o.id}', email)];
+      if (att == null || att.checkIn == null) continue; // hanya sesi yang diabsen yang dibayar
+      final dayKey = _df.format(_day(o.start));
+      if (_d(dayKey).year != year || _d(dayKey).month != month) continue;
+      final endT = att.checkOut != null ? _m(att.checkOut!) : _m(_tf.format(o.end));
+      var mins = endT - _m(att.checkIn!);
+      if (mins <= 0) mins += 1440; // sesi melewati tengah malam
+      ot.add(OvertimeItem(dayKey, att.checkIn!, att.checkOut ?? _tf.format(o.end),
+          mins / 60.0, kind: o.kind, title: o.title, attended: true));
+    }
     final otHours = ot.fold<double>(0, (s, i) => s + i.hours);
 
-    // Lembur: jam pertama 1,5x, jam berikutnya 2x (upah per jam = gaji / 173)
     final hourly = salary / (_pay['overtime_divisor'] as num);
     var otPay = 0.0;
     for (final i in ot) {
@@ -503,6 +829,21 @@ class MockServer {
       otPay += hourly * (first * (_pay['overtime_first_hour_x'] as num) +
           rest * (_pay['overtime_next_hour_x'] as num));
     }
+
+    // Kehadiran meeting/pelatihan bulan ini (validasi dari tabel peserta)
+    final evAtt = _eventAtts.values.where((a) {
+      final e = _eventById(a.eventId);
+      return a.userEmail == email &&
+          e != null &&
+          a.checkIn != null &&
+          e.start.year == year &&
+          e.start.month == month;
+    }).toList();
+    final eventAttended = evAtt.length;
+    final eventInvited = _events
+        .where((e) =>
+            e.isParticipant(email) && e.start.year == year && e.start.month == month)
+        .length;
 
     return Rekap(
       year: year,
@@ -515,6 +856,8 @@ class MockServer {
       lateMinutes: lateMin,
       overtimeHours: otHours,
       overtime: ot,
+      eventAttended: eventAttended,
+      eventInvited: eventInvited,
       baseSalary: salary,
       mealAllowance: (hadir + telat) * (_pay['meal_allowance_per_day'] as num).toDouble(),
       overtimePay: otPay,
