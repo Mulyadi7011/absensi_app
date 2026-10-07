@@ -68,7 +68,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
           child: Column(
             children: [
               DropdownButtonFormField<String>(
-                value: _type,
+                initialValue: _type,
                 decoration: const InputDecoration(
                     labelText: 'Jenis pengajuan'),
                 items: const ['Izin', 'Sakit', 'Cuti']

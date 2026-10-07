@@ -156,7 +156,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField<String>(
-                value: _type,
+                initialValue: _type,
                 decoration: const InputDecoration(labelText: 'Jenis pengajuan'),
                 items: Pengajuan.types
                     .map((e) => DropdownMenuItem(value: e, child: Text(e)))

@@ -88,9 +88,9 @@ class ExportService {
     final ym = '${rekap.year}${rekap.month.toString().padLeft(2, '0')}';
     final path = '${dir.path}/Laporan_Absensi_${name.replaceAll(' ', '_')}_$ym.xlsx';
     await File(path).writeAsBytes(bytes, flush: true);
-    await Share.shareXFiles(
-      [XFile(path, mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')],
+    await SharePlus.instance.share(ShareParams(
+      files: [XFile(path, mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')],
       text: 'Laporan absensi $name periode $ym',
-    );
+    ));
   }
 }

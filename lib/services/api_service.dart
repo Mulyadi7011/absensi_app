@@ -7,6 +7,7 @@ import '../models/attendance.dart';
 import '../models/notification.dart';
 import '../models/office.dart';
 import '../models/event.dart';
+import '../models/leave.dart';
 import '../models/pengajuan.dart';
 import '../models/rekap.dart';
 import '../models/shift.dart';
@@ -143,6 +144,20 @@ class ApiService {
   static Future<List<Pengajuan>> requests() => _mock(MockServer.requests);
   static Future<List<Pengajuan>> approvals() => _mock(MockServer.approvals);
   static Future<List<int>> leaveBalance() => _mock(MockServer.leaveBalance);
+
+  /// Ringkasan cuti + daftar pengajuan Izin/Sakit/Cuti milik user aktif.
+  static Future<LeaveSummary> leaves() async {
+    final bal = await leaveBalance();
+    final items = (await requests())
+        .where((r) => const ['Izin', 'Sakit', 'Cuti'].contains(r.type))
+        .toList();
+    return LeaveSummary(bal[0], bal[1], items);
+  }
+
+  /// Ajukan izin/sakit/cuti (diteruskan ke sistem pengajuan umum).
+  static Future<void> submitLeave(
+          String type, DateTime start, DateTime end, String reason) =>
+      submitRequest(type: type, start: start, end: end, reason: reason);
 
   static Future<void> submitRequest({
     required String type,

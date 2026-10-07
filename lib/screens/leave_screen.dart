@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/leave.dart';
+import '../models/pengajuan.dart';
 import '../services/api_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
@@ -47,7 +48,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     if (ok == true) _load();
   }
 
-  String _range(Leave l) {
+  String _range(Pengajuan l) {
     final f = DateFormat('d MMM yyyy', 'id_ID');
     final a = DateTime.parse(l.startDate), b = DateTime.parse(l.endDate);
     return l.days == 1 ? f.format(a) : '${f.format(a)} - ${f.format(b)}';
