@@ -484,23 +484,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         tone = c.danger;
         icon = Icons.gpp_bad;
         title = 'Fake GPS terdeteksi';
-        detail = 'Akurasi ±${acc.round()} m';
+        detail = 'Akurasi +/-${acc.round()} m';
       } else if (acc > LocationService.maxAccuracyM) {
         tone = c.warning;
         icon = Icons.gps_not_fixed;
         title = 'Akurasi GPS rendah';
-        detail = 'Akurasi ±${acc.round()} m';
+        detail = 'Akurasi +/-${acc.round()} m';
       } else if (mode != 'WFO') {
         tone = c.success;
         icon = Icons.location_on;
         title = 'Lokasi terdeteksi';
         detail = mode == 'WFH'
-            ? 'Mode WFH: jarak ke rumah terdaftar diverifikasi saat absen - ±${acc.round()} m'
-            : 'Mode Dinas Luar: lokasi dicatat tanpa batas radius - ±${acc.round()} m';
+            ? 'Mode WFH: jarak ke rumah terdaftar diverifikasi saat absen - +/-${acc.round()} m'
+            : 'Mode Dinas Luar: lokasi dicatat tanpa batas radius - +/-${acc.round()} m';
       } else {
         final d = LocationService.distance(_pos!, o.latitude, o.longitude);
         detail = 'Jarak ${d.round()} m dari ${o.name} (maks ${o.radiusM.round()} m) - '
-            'akurasi ±${acc.round()} m';
+            'akurasi +/-${acc.round()} m';
         if (d > o.radiusM) {
           tone = c.warning;
           icon = Icons.wrong_location;

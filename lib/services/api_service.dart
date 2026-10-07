@@ -64,7 +64,7 @@ class ApiService {
         if (mode != null) 'mode': mode,
       };
 
-  /// Payload absen sesi (lembur/meeting) — menyertakan office_id utk validasi radius.
+  /// Payload absen sesi (lembur/meeting) - menyertakan office_id utk validasi radius.
   static Future<Map<String, dynamic>> _payloadWithOffice(Position p) async =>
       {..._payload(p), 'office_id': await _officeId()};
 
@@ -173,7 +173,11 @@ class ApiService {
       _mock((e) => MockServer.recap(e, year, month));
 
   // ---------- Lembur terjadwal / On-Call (validasi dari tabel peserta) ----------
-  static Future<List<OvertimeSchedule>> myOvertimes() => _mock(MockServer.myOvertimes);
+  static Future<List<OvertimeSchedule>> myOvertimes() =>
+      _mock((e) async {
+        final l = await MockServer.myOvertimes(e);
+        return List<OvertimeSchedule>.from(l);
+      });
 
   static Future<EventAttendance> overtimeCheckIn(String otId, Position pos) =>
       _mock((e) async => MockServer.overtimeCheckIn(e, otId, await _payloadWithOffice(pos)));
@@ -182,7 +186,10 @@ class ApiService {
       _mock((e) async => MockServer.overtimeCheckOut(e, otId, await _payloadWithOffice(pos)));
 
   // ---------- Absensi Meeting & Pelatihan (validasi dari tabel peserta) ----------
-  static Future<List<WorkEvent>> myEvents() => _mock(MockServer.myEvents);
+  static Future<List<WorkEvent>> myEvents() => _mock((e) async {
+        final l = await MockServer.myEvents(e);
+        return List<WorkEvent>.from(l);
+      });
 
   static Future<EventAttendance?> eventAttendance(String eventId) =>
       _mock((e) => MockServer.eventAttendance(e, eventId));

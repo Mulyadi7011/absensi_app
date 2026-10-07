@@ -71,7 +71,7 @@ class ShiftParser {
 }
 
 /// Jadwal lembur dari tabel "lembur" (kalender perusahaan): terjadwal atau on-call.
-/// Bukan pengajuan mandiri — kehadiran lembur divalidasi lewat absen lembur pada event ini.
+/// Bukan pengajuan mandiri - kehadiran lembur divalidasi lewat absen lembur pada event ini.
 class OvertimeSchedule {
   static const typeScheduled = 'Terjadwal';
   static const typeOnCall = 'On-Call';

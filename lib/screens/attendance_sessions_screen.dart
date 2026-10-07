@@ -6,7 +6,7 @@ import '../services/api_service.dart';
 import '../services/location_service.dart';
 
 /// Layar "Absen Sesi": Lembur Terjadwal/On-Call + Absensi Meeting & Pelatihan.
-/// Seluruh validasi dilakukan "server" (MockServer) berdasar TABEL peserta —
+/// Seluruh validasi dilakukan "server" (MockServer) berdasar TABEL peserta -
 /// user yang tidak ada di tabel peserta tidak akan bisa absen.
 class AttendanceSessionsScreen extends StatefulWidget {
   const AttendanceSessionsScreen({super.key});

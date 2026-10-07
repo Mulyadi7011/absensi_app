@@ -151,15 +151,38 @@ class MockServer {
       _day(o.start) == day || (o.crossesMidnight && _day(o.end) == day);
 
   static WorkEvent? _eventById(String id) {
+    if (id.startsWith('OT:')) {
+      // sesi lembur disimpan dengan key 'OT:<id>' - kembalikan event dummy
+      // agar rekap tetap bisa memfilter bulan/tahun dari jadwal lemburnya.
+      final ot = _otById(id.substring(3));
+      if (ot == null) return null;
+      return WorkEvent(
+        id: id,
+        title: ot.title,
+        kind: 'Lembur',
+        organizer: '',
+        location: '',
+        start: ot.start,
+        end: ot.end,
+        participants: const [],
+      );
+    }
     for (final e in _events) {
       if (e.id == id) return e;
     }
     return null;
   }
 
+  static OvertimeSchedule? _otById(String id) {
+    for (final o in _overtimes) {
+      if (o.id == id) return o;
+    }
+    return null;
+  }
+
   static String _ek(String eventId, String email) => '$eventId|$email';
 
-  /// Jadwal kerja masing-masing karyawan pada hari [date] — sumber jam kerja & toleransi.
+  /// Jadwal kerja masing-masing karyawan pada hari [date] - sumber jam kerja & toleransi.
   static Map<String, dynamic> _workHours(String email, DateTime date) {
     final s = _shiftOn(email, date);
     return {
@@ -436,7 +459,7 @@ class MockServer {
     return l;
   }
 
-  /// Check in sesi lembur — validasi dari TABEL peserta lembur (bukan pengajuan mandiri).
+  /// Check in sesi lembur - validasi dari TABEL peserta lembur (bukan pengajuan mandiri).
   static Future<EventAttendance> overtimeCheckIn(String email, String otId,
       Map<String, dynamic> p) async {
     await init();
@@ -511,13 +534,12 @@ class MockServer {
   }
 
   /// Validasi lokasi sesi: Lembur Terjadwal wajib di radius kantor; On-Call cukup GPS valid
-  /// (bisa dari rumah/mana pun — lokasi hanya dicatat). Meeting/Pelatihan (o == null):
-  /// di dalam radius kantor ATAU sesuai lokasi event (lokasi dicatat tanpa batas ketat).
-  static double? _otValidate(Map<String, dynamic> p, OvertimeSchedule? o, {String? location}) {
+  /// (bisa dari rumah/mana pun - lokasi hanya dicatat).
+  static double? _otValidate(Map<String, dynamic> p, OvertimeSchedule o) {
     return _gpsBase(p, distanceTo: () {
-      if (o != null && o.kind == OvertimeSchedule.typeOnCall) return null;
-      if (location != null && location.trim().isNotEmpty) return null; // meeting/training: dicatat
-      final lat = p['latitude'] as double, lng = p['longitude'] as double;
+      if (o.kind == OvertimeSchedule.typeOnCall) return null;
+      final lat = (p['latitude'] as num).toDouble();
+      final lng = (p['longitude'] as num).toDouble();
       final officeId = p['office_id'] as String?;
       Office? off;
       for (final x in _offices) {
@@ -546,7 +568,7 @@ class MockServer {
     return _eventAtts[_ek(eventId, email)];
   }
 
-  /// Absen kehadiran meeting/pelatihan — HANYA boleh jika email ada di tabel peserta.
+  /// Absen kehadiran meeting/pelatihan - HANYA boleh jika email ada di tabel peserta.
   static Future<EventAttendance> eventCheckIn(String email, String eventId,
       Map<String, dynamic> p) async {
     await init();
@@ -762,7 +784,7 @@ class MockServer {
       }
     }
     // WFH / Dinas Luar: dibaca langsung dari daftar pengajuan (validasi absen).
-    // Lembur TIDAK lagi lewat pengajuan — sumbernya tabel jadwal lembur (Terjadwal/On-Call).
+    // Lembur TIDAK lagi lewat pengajuan - sumbernya tabel jadwal lembur (Terjadwal/On-Call).
   }
 
   // ---------------- notifikasi ----------------

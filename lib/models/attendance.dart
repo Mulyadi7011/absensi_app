@@ -11,7 +11,7 @@ class Attendance {
   final int breakMin; // menit istirahat (dikurangi dari jam kerja)
   final int lateMin; // menit terlambat (untuk potongan gaji)
 
-  /// Jam kerja sesuai jadwal shift karyawan hari itu (HH:mm–HH:mm), untuk UI/dashboard.
+  /// Jam kerja sesuai jadwal shift karyawan hari itu (HH:mm-HH:mm), untuk UI/dashboard.
   final String? scheduledStart, scheduledEnd;
   final int toleranceMin; // toleransi keterlambatan dari shift yang dijadwalkan
 
