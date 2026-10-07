@@ -1,0 +1,8 @@
+{
+  "working_days": 22,
+  "late_deduction_per_min": 1000,
+  "meal_allowance_per_day": 25000,
+  "overtime_divisor": 173,
+  "overtime_first_hour_x": 1.5,
+  "overtime_next_hour_x": 2.0
+}

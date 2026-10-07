@@ -1,0 +1,11 @@
+[
+  { "email": "budi@contoh.com", "password": "123456", "name": "Budi Santoso", "office_id": "HQ",
+    "role": "employee", "approver": "dewi@contoh.com", "salary": 8000000, "seed_history": true,
+    "home": { "latitude": -6.2000, "longitude": 106.8450, "radius_m": 150 } },
+  { "email": "sari@contoh.com", "password": "123456", "name": "Sari Wulandari", "office_id": "BDG",
+    "role": "employee", "approver": "dewi@contoh.com", "salary": 7500000, "seed_history": false,
+    "home": { "latitude": -6.9200, "longitude": 107.6100, "radius_m": 150 } },
+  { "email": "dewi@contoh.com", "password": "123456", "name": "Dewi Lestari", "office_id": "HQ",
+    "role": "supervisor", "approver": null, "salary": 12000000, "seed_history": true,
+    "home": { "latitude": -6.2100, "longitude": 106.8300, "radius_m": 150 } }
+]

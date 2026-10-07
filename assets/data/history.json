@@ -1,0 +1,482 @@
+[
+ {
+  "days_ago": 1,
+  "check_in": "08:27",
+  "check_out": "17:03",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 18
+ },
+ {
+  "days_ago": 2,
+  "check_in": "07:54",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 31
+ },
+ {
+  "days_ago": 3,
+  "check_in": "07:42",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 44
+ },
+ {
+  "days_ago": 4,
+  "check_in": "07:49",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 57
+ },
+ {
+  "days_ago": 5,
+  "check_in": "07:56",
+  "check_out": "17:15",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 10
+ },
+ {
+  "days_ago": 6,
+  "check_in": null,
+  "check_out": null,
+  "status": "Izin",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 7,
+  "check_in": "07:51",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 36
+ },
+ {
+  "days_ago": 8,
+  "check_in": "07:58",
+  "check_out": "17:03",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 49
+ },
+ {
+  "days_ago": 9,
+  "check_in": "07:46",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 62
+ },
+ {
+  "days_ago": 10,
+  "check_in": "07:53",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 15
+ },
+ {
+  "days_ago": 11,
+  "check_in": "07:41",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 28
+ },
+ {
+  "days_ago": 12,
+  "check_in": "08:43",
+  "check_out": "17:15",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 41
+ },
+ {
+  "days_ago": 13,
+  "check_in": "07:55",
+  "check_out": "17:18",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 54
+ },
+ {
+  "days_ago": 14,
+  "check_in": "07:43",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 7
+ },
+ {
+  "days_ago": 15,
+  "check_in": "07:50",
+  "check_out": "17:03",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 20
+ },
+ {
+  "days_ago": 16,
+  "check_in": "07:57",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 33
+ },
+ {
+  "days_ago": 17,
+  "check_in": null,
+  "check_out": null,
+  "status": "Alpa",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 18,
+  "check_in": "08:39",
+  "check_out": "17:12",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 59
+ },
+ {
+  "days_ago": 19,
+  "check_in": "07:40",
+  "check_out": "17:15",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 12
+ },
+ {
+  "days_ago": 20,
+  "check_in": "07:47",
+  "check_out": "17:18",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 25
+ },
+ {
+  "days_ago": 21,
+  "check_in": "07:54",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 38
+ },
+ {
+  "days_ago": 22,
+  "check_in": "07:42",
+  "check_out": "17:03",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 51
+ },
+ {
+  "days_ago": 23,
+  "check_in": null,
+  "check_out": null,
+  "status": "Izin",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 24,
+  "check_in": "07:56",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 17
+ },
+ {
+  "days_ago": 25,
+  "check_in": "07:44",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 30
+ },
+ {
+  "days_ago": 26,
+  "check_in": "07:51",
+  "check_out": "17:15",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 43
+ },
+ {
+  "days_ago": 27,
+  "check_in": "07:58",
+  "check_out": "17:18",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 56
+ },
+ {
+  "days_ago": 28,
+  "check_in": "07:46",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 9
+ },
+ {
+  "days_ago": 29,
+  "check_in": "08:20",
+  "check_out": "17:03",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 22
+ },
+ {
+  "days_ago": 30,
+  "check_in": "07:41",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 35
+ },
+ {
+  "days_ago": 31,
+  "check_in": "07:48",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 48
+ },
+ {
+  "days_ago": 32,
+  "check_in": "07:55",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 61
+ },
+ {
+  "days_ago": 33,
+  "check_in": "07:43",
+  "check_out": "17:15",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 14
+ },
+ {
+  "days_ago": 34,
+  "check_in": null,
+  "check_out": null,
+  "status": "Alpa",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 35,
+  "check_in": "08:16",
+  "check_out": "17:00",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 40
+ },
+ {
+  "days_ago": 36,
+  "check_in": "07:45",
+  "check_out": "17:03",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 53
+ },
+ {
+  "days_ago": 37,
+  "check_in": "07:52",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 6
+ },
+ {
+  "days_ago": 38,
+  "check_in": "07:40",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 19
+ },
+ {
+  "days_ago": 39,
+  "check_in": "07:47",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 32
+ },
+ {
+  "days_ago": 40,
+  "check_in": null,
+  "check_out": null,
+  "status": "Izin",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 41,
+  "check_in": "07:42",
+  "check_out": "17:18",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 58
+ },
+ {
+  "days_ago": 42,
+  "check_in": "07:49",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 11
+ },
+ {
+  "days_ago": 43,
+  "check_in": "07:56",
+  "check_out": "17:03",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 24
+ },
+ {
+  "days_ago": 44,
+  "check_in": "07:44",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 37
+ },
+ {
+  "days_ago": 45,
+  "check_in": "07:51",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 50
+ },
+ {
+  "days_ago": 46,
+  "check_in": "08:32",
+  "check_out": "17:12",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 63
+ },
+ {
+  "days_ago": 47,
+  "check_in": "07:46",
+  "check_out": "17:15",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 16
+ },
+ {
+  "days_ago": 48,
+  "check_in": "07:53",
+  "check_out": "17:18",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 29
+ },
+ {
+  "days_ago": 49,
+  "check_in": "07:41",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 42
+ },
+ {
+  "days_ago": 50,
+  "check_in": "07:48",
+  "check_out": "17:03",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 55
+ },
+ {
+  "days_ago": 51,
+  "check_in": null,
+  "check_out": null,
+  "status": "Alpa",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 52,
+  "check_in": "08:28",
+  "check_out": "17:09",
+  "status": "Terlambat",
+  "office": "Kantor Pusat",
+  "distance_m": 21
+ },
+ {
+  "days_ago": 53,
+  "check_in": "07:50",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 34
+ },
+ {
+  "days_ago": 54,
+  "check_in": "07:57",
+  "check_out": "17:15",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 47
+ },
+ {
+  "days_ago": 55,
+  "check_in": "07:45",
+  "check_out": "17:18",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 60
+ },
+ {
+  "days_ago": 56,
+  "check_in": "07:52",
+  "check_out": "17:00",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 13
+ },
+ {
+  "days_ago": 57,
+  "check_in": null,
+  "check_out": null,
+  "status": "Izin",
+  "office": null,
+  "distance_m": null
+ },
+ {
+  "days_ago": 58,
+  "check_in": "07:47",
+  "check_out": "17:06",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 39
+ },
+ {
+  "days_ago": 59,
+  "check_in": "07:54",
+  "check_out": "17:09",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 52
+ },
+ {
+  "days_ago": 60,
+  "check_in": "07:42",
+  "check_out": "17:12",
+  "status": "Hadir",
+  "office": "Kantor Pusat",
+  "distance_m": 5
+ }
+]

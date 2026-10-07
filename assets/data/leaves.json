@@ -1,0 +1,6 @@
+[
+  { "id": "L1", "type": "Cuti",  "start_offset": -20, "end_offset": -18, "reason": "Acara keluarga di luar kota", "status": "Disetujui" },
+  { "id": "L2", "type": "Sakit", "start_offset": -35, "end_offset": -34, "reason": "Demam dan flu", "status": "Disetujui" },
+  { "id": "L3", "type": "Izin",  "start_offset": -6,  "end_offset": -6,  "reason": "Mengurus dokumen di kelurahan", "status": "Ditolak" },
+  { "id": "L4", "type": "Cuti",  "start_offset": 10,  "end_offset": 11,  "reason": "Liburan singkat", "status": "Menunggu" }
+]

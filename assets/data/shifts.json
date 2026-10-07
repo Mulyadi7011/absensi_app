@@ -1,0 +1,12 @@
+{
+  "shifts": [
+    { "id": "PAGI",  "name": "Shift Pagi",  "start": "08:00", "end": "17:00", "break_start": "12:00", "break_end": "13:00", "tolerance_min": 15 },
+    { "id": "SIANG", "name": "Shift Siang", "start": "14:00", "end": "22:00", "break_start": "18:00", "break_end": "18:30", "tolerance_min": 10 },
+    { "id": "MALAM", "name": "Shift Malam", "start": "22:00", "end": "06:00", "break_start": "02:00", "break_end": "03:00", "tolerance_min": 10 }
+  ],
+  "patterns": {
+    "budi@contoh.com": ["PAGI", "PAGI", "PAGI", "PAGI", "PAGI", null, null],
+    "sari@contoh.com": ["SIANG", "SIANG", "MALAM", "MALAM", "PAGI", null, null],
+    "dewi@contoh.com": ["PAGI", "PAGI", "PAGI", "PAGI", "PAGI", null, null]
+  }
+}

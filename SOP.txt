@@ -1,0 +1,55 @@
+Aplikasi absensi di HP biasanya terdiri dari tiga lapis: cara memverifikasi kehadiran, pencegahan kecurangan, dan alur administrasi (izin, cuti, laporan). Contohnya Talenta (Mekari), Kalender, Fingerspot, atau GreatDay.
+
+1. Metode verifikasi kehadiran
+Metode	Cara kerja	Catatan
+GPS geofencing	Absen hanya bisa dalam radius tertentu dari lokasi kantor (misalnya 50-100 m)	Paling umum, hampir semua aplikasi memakainya
+Selfie + face recognition	Foto wajah dicocokkan dengan foto terdaftar	Sering dilengkapi liveness check (kedip atau gerak kepala) agar tidak bisa pakai foto cetak
+QR code	Scan QR yang ditampilkan di kantor, biasanya berubah berkala	Cocok untuk lokasi tanpa GPS yang akurat
+WiFi / BSSID	Absen hanya valid jika terhubung ke WiFi kantor	Pelengkap GPS
+NFC / Bluetooth beacon	Tempel HP ke tag atau dekat beacon	Untuk pabrik, rumah sakit, atau area indoor
+Biometrik perangkat	Sidik jari atau wajah bawaan HP sebelum absen	Memastikan yang memegang HP adalah pemilik akun
+
+Biasanya beberapa metode digabung, misalnya GPS + selfie.
+
+2. Anti-kecurangan
+
+Ini pembeda aplikasi serius dengan aplikasi sederhana:
+
+Jam dari server, bukan jam HP. Karyawan bisa mengubah jam HP.
+Deteksi fake GPS / mock location, serta deteksi HP root atau jailbreak.
+Device binding: satu akun hanya bisa login di satu HP terdaftar, supaya tidak "titip absen".
+Watermark foto (waktu, koordinat, nama) dan penyimpanan foto sebagai bukti.
+Cek akurasi GPS, supaya lokasi dengan akurasi buruk ditolak.
+Audit log untuk setiap perubahan, termasuk koreksi absen oleh HR.
+
+3. Fitur administrasi
+Jadwal dan shift (termasuk shift malam yang melewati tengah malam), toleransi keterlambatan, jam istirahat
+Lembur, dinas luar, dan WFH/WFO dengan aturan lokasi berbeda
+Pengajuan izin, cuti, sakit dengan alur persetujuan atasan, plus lampiran surat dokter
+Koreksi absen ("lupa absen") dengan persetujuan
+Notifikasi pengingat absen masuk dan pulang
+Rekap bulanan, sisa cuti, dan export laporan Excel
+Integrasi ke payroll (potongan keterlambatan, uang lembur)
+
+4. Arsitektur dan keamanan
+Semua validasi di backend. Aplikasi HP hanya mengirim data. Aturan seperti "apakah di dalam radius" dan "apakah terlambat" harus dihitung server, karena aplikasi bisa dimanipulasi.
+Role: karyawan, atasan, admin HR.
+Mode offline: absen disimpan lokal lalu disinkronkan, dengan tanda waktu yang tetap divalidasi server.
+Token disimpan di penyimpanan aman, dengan refresh token.
+Di Indonesia, data wajah dan biometrik termasuk data pribadi yang sensitif menurut UU PDP. Perusahaan perlu persetujuan karyawan, enkripsi, dan kebijakan retensi data.
+5. Posisi aplikasi Anda sekarang
+
+Aplikasi yang sudah kita buat baru mencakup dasar: login, check in/out, dan riwayat. Celahnya:
+
+Token masih di shared_preferences, belum di penyimpanan aman
+Belum ada verifikasi lokasi atau wajah
+Belum ada jadwal shift, izin/cuti, atau admin web
+
+Urutan pengembangan yang masuk akal:
+
+Fondasi aman: jam dari server, token di flutter_secure_storage
+GPS geofencing (geolocator) + deteksi mock location
+Selfie (camera / image_picker), lalu face detection (google_mlkit_face_detection)
+Izin dan cuti dengan alur persetujuan
+Biometrik HP (local_auth) dan device binding
+Mode offline, lalu admin web

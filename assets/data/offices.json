@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "max_accuracy_m": 50,
+    "leave_quota": 12,
+    "enforce_shift_window": false
+  },
+  "offices": [
+    {
+      "id": "HQ",
+      "name": "Kantor Pusat",
+      "latitude": -6.1754,
+      "longitude": 106.8272,
+      "radius_m": 100
+    },
+    {
+      "id": "BDG",
+      "name": "Kantor Cabang Bandung",
+      "latitude": -6.9147,
+      "longitude": 107.6098,
+      "radius_m": 75
+    }
+  ]
+}

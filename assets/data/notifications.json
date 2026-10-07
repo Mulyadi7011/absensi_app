@@ -1,0 +1,8 @@
+[
+  { "email": "budi@contoh.com", "title": "Dinas Luar disetujui", "body": "Pengajuan Dinas Luar Anda telah disetujui oleh Dewi Lestari.", "minutes_ago": 45, "read": false, "kind": "info" },
+  { "email": "budi@contoh.com", "title": "WFH disetujui", "body": "Pengajuan WFH hari ini disetujui.", "minutes_ago": 50, "read": false, "kind": "info" },
+  { "email": "budi@contoh.com", "title": "Pengajuan ditolak", "body": "Izin ditolak: Mohon ajukan H-1.", "minutes_ago": 1500, "read": true, "kind": "info" },
+  { "email": "dewi@contoh.com", "title": "Pengajuan baru", "body": "Budi Santoso mengajukan Koreksi Absen.", "minutes_ago": 120, "read": false, "kind": "approval" },
+  { "email": "dewi@contoh.com", "title": "Pengajuan baru", "body": "Sari Wulandari mengajukan Lembur.", "minutes_ago": 200, "read": false, "kind": "approval" },
+  { "email": "dewi@contoh.com", "title": "Pengajuan baru", "body": "Sari Wulandari mengajukan Izin.", "minutes_ago": 300, "read": false, "kind": "approval" }
+]
