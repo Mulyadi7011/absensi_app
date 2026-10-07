@@ -303,7 +303,7 @@ class MockServer {
         if (r.userEmail != email || r.status != 'Disetujui') continue;
         if (d.isBefore(_d(r.startDate)) || d.isAfter(_d(r.endDate))) continue;
         if (r.type == 'Lembur') {
-          tags.add('Lembur ${r.startTime}–${r.endTime}');
+          tags.add('Lembur ${r.startTime}-${r.endTime}');
         } else if (r.type != 'Koreksi Absen') {
           tags.add(r.type);
         }
@@ -312,7 +312,7 @@ class MockServer {
       for (final o in _overtimes) {
         if (o.involves(email) && _otBelongsTo(o, d)) {
           tags.add('${o.kind == OvertimeSchedule.typeOnCall ? 'On-Call' : 'Lembur'} '
-              '${_tf.format(o.start)}–${_tf.format(o.end)}');
+              '${_tf.format(o.start)}-${_tf.format(o.end)}');
         }
       }
       // undangan meeting/pelatihan (validasi dari tabel peserta)

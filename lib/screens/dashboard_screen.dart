@@ -313,8 +313,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Text(
                                 _shift == null
                                     ? _office!.name
-                                    : '${_office!.name} • ${_shift!.shift.name}'
-                                      ' • jam kerja ${_shift!.shift.start}–${_shift!.shift.end}',
+                                    : '${_office!.name} - ${_shift!.shift.name}'
+                                      ' - jam kerja ${_shift!.shift.start}-${_shift!.shift.end}',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(color: c.onPrimary, fontSize: 12)),
                           ),
@@ -384,7 +384,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 )),
             if (s != null) ...[
               const SizedBox(height: 6),
-              Text('${s.name} • ${s.hours} • istirahat ${s.breakLabel}',
+              Text('${s.name} - ${s.hours} - istirahat ${s.breakLabel}',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12, color: c.muted)),
               if (s.crossesMidnight)
@@ -495,11 +495,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         icon = Icons.location_on;
         title = 'Lokasi terdeteksi';
         detail = mode == 'WFH'
-            ? 'Mode WFH: jarak ke rumah terdaftar diverifikasi saat absen • ±${acc.round()} m'
-            : 'Mode Dinas Luar: lokasi dicatat tanpa batas radius • ±${acc.round()} m';
+            ? 'Mode WFH: jarak ke rumah terdaftar diverifikasi saat absen - ±${acc.round()} m'
+            : 'Mode Dinas Luar: lokasi dicatat tanpa batas radius - ±${acc.round()} m';
       } else {
         final d = LocationService.distance(_pos!, o.latitude, o.longitude);
-        detail = 'Jarak ${d.round()} m dari ${o.name} (maks ${o.radiusM.round()} m) • '
+        detail = 'Jarak ${d.round()} m dari ${o.name} (maks ${o.radiusM.round()} m) - '
             'akurasi ±${acc.round()} m';
         if (d > o.radiusM) {
           tone = c.warning;

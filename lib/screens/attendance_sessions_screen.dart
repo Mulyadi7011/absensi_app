@@ -34,7 +34,7 @@ class _AttendanceSessionsScreenState extends State<AttendanceSessionsScreen> {
     final day = isToday
         ? 'Hari ini'
         : (_sameDay(s, now.add(const Duration(days: 1))) ? 'Besok' : _d(s));
-    final range = '$day ${_t(s)}–${_t(e)}${e.isBefore(s.add(const Duration(hours: 6))) ? '' : ' (+1h)'}';
+    final range = '$day ${_t(s)}-${_t(e)}${e.isBefore(s.add(const Duration(hours: 6))) ? '' : ' (+1h)'}';
     return range;
   }
 
@@ -118,7 +118,7 @@ class _AttendanceSessionsScreenState extends State<AttendanceSessionsScreen> {
         : Chip(
             avatar: Icon(Icons.check, size: 16, color: Colors.white),
             backgroundColor: att.status == 'Hadir' ? Colors.green : Colors.orange,
-            label: Text('${att.status} · masuk ${att.checkIn}${att.checkOut != null ? ' · keluar ${att.checkOut}' : ''}',
+            label: Text('${att.status} - masuk ${att.checkIn}${att.checkOut != null ? ' - keluar ${att.checkOut}' : ''}',
                 style: const TextStyle(color: Colors.white)),
           );
     return Card(
@@ -209,8 +209,8 @@ class _AttendanceSessionsScreenState extends State<AttendanceSessionsScreen> {
                       icon: o.kind == OvertimeSchedule.typeOnCall ? Icons.support_agent : Icons.work_outline,
                       color: o.kind == OvertimeSchedule.typeOnCall ? Colors.deepOrange : Colors.indigo,
                       title: o.title,
-                      subtitle: '${o.kind} · ${o.hours.toStringAsFixed(1)} jam · upah ×${o.rateX.toStringAsFixed(1)}'
-                          '${o.kind == OvertimeSchedule.typeOnCall ? ' · lokasi bebas (GPS valid)' : ' · wajib di radius kantor'}',
+                      subtitle: '${o.kind} - ${o.hours.toStringAsFixed(1)} jam - upah x${o.rateX.toStringAsFixed(1)}'
+                          '${o.kind == OvertimeSchedule.typeOnCall ? ' - lokasi bebas (GPS valid)' : ' - wajib di radius kantor'}',
                       when: _whenLabel(o.start, o.end),
                       window: 'Absen dibuka H-15 menit hingga 1 jam setelah selesai.',
                       att: _att[key],
@@ -240,7 +240,7 @@ class _AttendanceSessionsScreenState extends State<AttendanceSessionsScreen> {
                       icon: e.icon,
                       color: e.kind == WorkEvent.kindTraining ? Colors.teal : Colors.purple,
                       title: e.title,
-                      subtitle: '${e.kind} · ${e.organizer} · ${e.location}',
+                      subtitle: '${e.kind} - ${e.organizer} - ${e.location}',
                       when: _whenLabel(e.start, e.end),
                       window: e.windowLabel,
                       att: _att[e.id],

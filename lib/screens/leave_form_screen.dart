@@ -96,7 +96,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                   ),
                   child: Text(_range == null
                       ? 'Pilih tanggal'
-                      : '${f.format(_range!.start)} – ${f.format(_range!.end)}  ($days hari)'),
+                      : '${f.format(_range!.start)} - ${f.format(_range!.end)}  ($days hari)'),
                 ),
               ),
               const SizedBox(height: 16),

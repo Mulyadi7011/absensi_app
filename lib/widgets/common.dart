@@ -80,7 +80,7 @@ class AttendanceTile extends StatelessWidget {
     final d = DateTime.tryParse(a.date);
     final time = a.checkIn == null
         ? 'Tanpa catatan jam'
-        : '${a.checkIn} – ${a.checkOut ?? 'belum pulang'}${a.lateMin > 0 ? ' • telat ${a.lateMin} m' : ''}';
+        : '${a.checkIn} - ${a.checkOut ?? 'belum pulang'}${a.lateMin > 0 ? ' - telat ${a.lateMin} m' : ''}';
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -114,7 +114,7 @@ class AttendanceTile extends StatelessWidget {
                     Text(d == null ? a.date : DateFormat('EEEE', 'id_ID').format(d),
                         style: TextStyle(fontWeight: FontWeight.w700, color: c.text)),
                     const SizedBox(height: 2),
-                    Text(a.office == null ? time : '$time • ${a.office}',
+                    Text(a.office == null ? time : '$time - ${a.office}',
                         style: TextStyle(fontSize: 12, color: c.muted)),
                   ],
                 ),

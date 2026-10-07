@@ -160,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _info(c, Icons.business, 'Kantor', _office?.name ?? '-'),
                       Divider(color: c.border),
                       _info(c, Icons.schedule, 'Shift saat ini',
-                          _shift == null ? '-' : '${_shift!.name} • ${_shift!.hours}'),
+                          _shift == null ? '-' : '${_shift!.name} - ${_shift!.hours}'),
                       Divider(color: c.border),
                       _info(c, Icons.radar, 'Radius absen',
                           _office == null ? '-' : '${_office!.radiusM.round()} m dari kantor'),
@@ -209,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ListTile(
                         leading: _icon(c, Icons.work_outline),
                         title: const Text('Lembur Terjadwal / On-Call'),
-                        subtitle: const Text('Absen lembur — validasi dari tabel peserta'),
+                        subtitle: const Text('Absen lembur - validasi dari tabel peserta'),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => const AttendanceSessionsScreen())),
@@ -218,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ListTile(
                         leading: _icon(c, Icons.groups_outlined),
                         title: const Text('Meeting & Pelatihan'),
-                        subtitle: const Text('Absen kehadiran undangan — validasi tabel peserta'),
+                        subtitle: const Text('Absen kehadiran undangan - validasi tabel peserta'),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => const AttendanceSessionsScreen())),

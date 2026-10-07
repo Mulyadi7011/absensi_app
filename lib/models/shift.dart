@@ -35,8 +35,8 @@ class Shift {
     return d;
   }
 
-  String get hours => '$start – $end';
-  String get breakLabel => '$breakStart – $breakEnd';
+  String get hours => '$start - $end';
+  String get breakLabel => '$breakStart - $breakEnd';
 }
 
 /// Satu kejadian shift pada tanggal tertentu (start/end sudah berupa DateTime,
@@ -50,7 +50,7 @@ class ShiftInstance {
 class DaySchedule {
   final DateTime date;
   final Shift? shift; // null = libur
-  final List<String> tags; // WFH, Dinas Luar, Cuti, Lembur 17:00–20:00, ...
+  final List<String> tags; // WFH, Dinas Luar, Cuti, Lembur 17:00-20:00, ...
   final List<String> events; // judul Meeting/Pelatihan yang diundang hari itu
   const DaySchedule(this.date, this.shift, this.tags, [this.events = const []]);
 }

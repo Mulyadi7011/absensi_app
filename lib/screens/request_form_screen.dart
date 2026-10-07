@@ -202,7 +202,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                     'Tanggal',
                     _range == null
                         ? 'Pilih tanggal'
-                        : '${f.format(_range!.start)} – ${f.format(_range!.end)}  (${_range!.duration.inDays + 1} hari)',
+                        : '${f.format(_range!.start)} - ${f.format(_range!.end)}  (${_range!.duration.inDays + 1} hari)',
                     Icons.date_range,
                     _pickRange,
                     empty: _range == null),

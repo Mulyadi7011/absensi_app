@@ -147,9 +147,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   if (s == null)
                     Text('Libur', style: TextStyle(color: c.muted))
                   else ...[
-                    Text('${s.name} • ${s.hours}${s.crossesMidnight ? ' (+1 hari)' : ''}',
+                    Text('${s.name} - ${s.hours}${s.crossesMidnight ? ' (+1 hari)' : ''}',
                         style: TextStyle(fontSize: 13, color: c.text)),
-                    Text('Istirahat ${s.breakLabel} • toleransi ${s.toleranceMin} menit',
+                    Text('Istirahat ${s.breakLabel} - toleransi ${s.toleranceMin} menit',
                         style: TextStyle(fontSize: 12, color: c.muted)),
                   ],
                   if (d.tags.isNotEmpty) ...[

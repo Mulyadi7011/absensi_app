@@ -66,7 +66,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${r.userName} • ${r.type}'),
+            Text('${r.userName} - ${r.type}'),
             const SizedBox(height: 12),
             TextField(
               controller: ctrl,
@@ -102,8 +102,8 @@ class _RequestsScreenState extends State<RequestsScreen> {
   String _range(Pengajuan r) {
     final f = DateFormat('d MMM yyyy', 'id_ID');
     final a = DateTime.parse(r.startDate), b = DateTime.parse(r.endDate);
-    final d = r.days == 1 ? f.format(a) : '${f.format(a)} – ${f.format(b)}';
-    return r.hasTime ? '$d • ${r.startTime}–${r.endTime}' : d;
+    final d = r.days == 1 ? f.format(a) : '${f.format(a)} - ${f.format(b)}';
+    return r.hasTime ? '$d - ${r.startTime}-${r.endTime}' : d;
   }
 
   Widget _card(AppColors c, Pengajuan r, {bool team = false}) {
@@ -130,7 +130,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          '${team ? '${r.userName} • ' : ''}${r.type}${r.days > 1 ? ' • ${r.days} hari' : ''}',
+                          '${team ? '${r.userName} - ' : ''}${r.type}${r.days > 1 ? ' - ${r.days} hari' : ''}',
                           style: TextStyle(fontWeight: FontWeight.w700, color: c.text)),
                       const SizedBox(height: 2),
                       Text(_range(r), style: TextStyle(fontSize: 12, color: c.muted)),

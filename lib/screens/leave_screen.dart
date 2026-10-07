@@ -50,7 +50,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
   String _range(Leave l) {
     final f = DateFormat('d MMM yyyy', 'id_ID');
     final a = DateTime.parse(l.startDate), b = DateTime.parse(l.endDate);
-    return l.days == 1 ? f.format(a) : '${f.format(a)} – ${f.format(b)}';
+    return l.days == 1 ? f.format(a) : '${f.format(a)} - ${f.format(b)}';
   }
 
   @override
@@ -150,7 +150,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('${l.type} • ${l.days} hari',
+                                      Text('${l.type} - ${l.days} hari',
                                           style: TextStyle(
                                               fontWeight: FontWeight.w700, color: c.text)),
                                       const SizedBox(height: 2),
